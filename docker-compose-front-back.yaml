@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
+    hostname: azurite
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    environment:
+      - AZURITE_STORAGE_ACCOUNTS=devstoreaccount1
+    # networks:
+    #   - etap
+    
+
+
+  front:
+    build:
+      context: ./ETAP-video-cast/      
+      dockerfile: Dockerfile  
+    container_name: etap_front_app
+    ports:
+      - "80:80"
+    # networks:
+    #   - etap
+    depends_on:
+      - etap_back_app
+
+  etap_back_app:
+    build:
+      context: ./ETAP-video-cast-backend/      
+      dockerfile: Dockerfile  
+    container_name: etap_back_app
+    hostname: etap_back_app
+    ports:
+      - "8080:8080"
+    # networks:
+    #   - etap
+    environment:
+      - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1
+    depends_on:
+      - azurite
+    volumes:
+      - C:\Users\MSI\Downloads\video_1690448191172.webm:/var/video_1690448191172.webm/
+
+
+# networks:
+#   etap:
+#     driver: bridge
