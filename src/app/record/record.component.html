@@ -1,0 +1,18 @@
+<div class="container">
+    <div>Screen record</div>
+    <div>
+      <button *ngIf="state === 'NONE'" (click)="startRecording()">
+        Start test
+      </button>
+      <button *ngIf="state === 'RECORDING'" (click)="stopRecording()">
+        End Test 
+      </button>
+      <button *ngIf="state === 'RECORDED'" (click)="submitRecording()">
+          Submit
+      </button>
+    </div>
+    <video #videoElement class="video-container" controls autoplay playsInline *ngIf="!show">
+      <source [src]="videoBlobUrl" />
+    </video>
+  </div>
+  <router-outlet></router-outlet>
